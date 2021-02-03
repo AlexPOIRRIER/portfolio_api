@@ -18,12 +18,25 @@ router.post('/', (req, res) => {
   );
 });
 
+// GET ALL JCP DATA
+router.get("/", (req, res) => {
+  pool.query("SELECT * FROM join_client_project",
+    (err, results) => {
+      if (err) {
+        res.status(500).send("Error retrieving data");
+      }
+      else {
+        res.status(200).json(results);
+      }
+    });
+});
+
 // DELETE JCP DATA
 router.delete('/:idProject/client/:idClient', (req, res) => {
   const idProject = req.params.idProject;
   const idClient = req.params.idClient;
   connection.query(
-    'DELETE FROM join_client_project WHERE project_id = ? AND client_id = ?',
+    'DELETE FROM join_client_project WHERE id_project = ? AND id_client = ?',
     [idProject, idClient],
     (err, results) => {
       if (err) {

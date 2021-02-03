@@ -10,7 +10,7 @@ const jlp = require('./join/join_language_project')
 router.use('/clients', client);
 router.use('/languages', language);
 router.use('/projects', project);
-router.use('./jcp', jcp)
-router.use('./jlp', jlp)
+router.use('/jcp', jcp)
+router.use('/jlp', jlp)
 
 module.exports = router;

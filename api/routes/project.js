@@ -10,7 +10,7 @@ router.post("/", (req, res) => {
       res.sendStatus(err);
     } else {
       const projectId = results.insertId;
-      pool.query("SELECT * FROM client WHERE id = ?", projectId,
+      pool.query("SELECT * FROM project WHERE id = ?", projectId,
         (error, records) => {
           if (error) {
             return res.sendStatus(error);
@@ -28,36 +28,30 @@ router.post("/", (req, res) => {
 
 //GET ALL PROJECTS
 router.get("/", (req, res) => {
-  let sql = "SELECT * FROM project";
-  const sqlValues = [];
-  if (req.query.genre) {
-    sql += " WHERE name LIKE ?";
-    const filter = `%${req.query.genre}%`;
-    sqlValues.push(filter);
-  }
-  pool.query(sql, sqlValues, (err, results) => {
-    if (err) {
-      res.status(500).send("Error retrieving data");
-    }
-    if (results.length === 0) {
-      res.status(404).send("Project doesn't exist")
-    }
-    else {
-      res.status(200).json(results);
-    }
-  });
+  pool.query(
+    "SELECT p.id AS project_id, p.name AS project_name, p.link AS project_link, p.duration AS project_duration, c.name AS client_name FROM project AS p JOIN join_client_project AS jcp ON jcp.id_project=p.id JOIN client AS c ON c.id=jcp.id_client",
+    (err, results) => {
+      if (err) {
+        res.status(500).send(err.message);
+      } else {
+        res.status(200).json(results);
+      }
+    });
 });
 
 //GET ONE PROJECT
 router.get("/:id", (req, res) => {
   const projectId = req.params.id;
-  pool.query("SELECT * FROM project WHERE id = ? ", projectId, (err, results) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.status(200).json(results);
-    }
-  });
+  pool.query(
+    "SELECT * FROM project WHERE id = ? ",
+    projectId,
+    (err, results) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        res.status(200).json(results);
+      }
+    });
 });
 
 //UPDATE ONE PROJECT
