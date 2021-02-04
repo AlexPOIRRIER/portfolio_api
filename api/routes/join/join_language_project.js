@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const projectId = req.params.id;
   pool.query(
-    "SELECT l.id FROM language AS l JOIN join_language_project AS jlp ON l.id=jlp.id_language WHERE id_project= ?",
+    "SELECT l.id, l.name FROM language AS l JOIN join_language_project AS jlp ON l.id=jlp.id_language WHERE id_project= ?",
     projectId,
     (err, results) => {
       if (err) {
@@ -48,13 +48,29 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.delete(
+  "/project/:idProject/", (req, res) => {
+    const idProject = req.params.idProject;
+    pool.query(
+      'DELETE FROM join_language_project WHERE id_project = ?',
+      idProject,
+      (err, results) => {
+        if (err) {
+          res.sendStatus(err);
+        } else {
+          res.sendStatus(200);
+        }
+      }
+    );
+  });
+
 // DELETE JLP DATA
 router.delete(
-  "/:idProject/client/:idLanguage", (req, res) => {
+  "/:idProject/language/:idLanguage", (req, res) => {
     const idProject = req.params.idProject;
     const idLanguage = req.params.idLanguage;
-    connection.query(
-      'DELETE FROM join_language_project WHERE project_id = ? AND language_id = ?',
+    pool.query(
+      'DELETE FROM join_language_project WHERE id_project = ? AND id_language = ?',
       [idProject, idLanguage],
       (err, results) => {
         if (err) {

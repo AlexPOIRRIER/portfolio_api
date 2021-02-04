@@ -35,7 +35,7 @@ router.get("/", (req, res) => {
 router.delete('/:idProject/client/:idClient', (req, res) => {
   const idProject = req.params.idProject;
   const idClient = req.params.idClient;
-  connection.query(
+  pool.query(
     'DELETE FROM join_client_project WHERE id_project = ? AND id_client = ?',
     [idProject, idClient],
     (err, results) => {
