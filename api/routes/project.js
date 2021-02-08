@@ -74,7 +74,7 @@ router.put("/:id", (req, res) => {
             const insertedEntity = records[0];
             const host = req.get("localhost");
             const location = `https://${host}${req.url}/${insertedEntity.id}`;
-            res.status(201).set("Location", location).json(insertedEntity);
+            res.status(202).set("Location", location).json(insertedEntity);
           }
         )
       }
