@@ -6,7 +6,7 @@ const pool = require("../../config");
 router.post('/', (req, res) => {
   const data = req.body;
   pool.query(
-    'INSERT INTO join_language_project SET ?',
+    'INSERT INTO join_project_language SET ?',
     data,
     (err, results) => {
       if (err) {
@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
 // GET ALL JLP DATA
 router.get("/", (req, res) => {
   pool.query(
-    "SELECT * FROM join_language_project",
+    "SELECT * FROM join_project_language",
     (err, results) => {
       if (err) {
         res.status(500).send("Error retrieving data");
@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const projectId = req.params.id;
   pool.query(
-    "SELECT l.id, l.name FROM language AS l JOIN join_language_project AS jlp ON l.id=jlp.id_language WHERE id_project= ?",
+    "SELECT l.id, l.name FROM language AS l JOIN join_project_language AS jlp ON l.id=jlp.language_id WHERE project_id= ?",
     projectId,
     (err, results) => {
       if (err) {
@@ -48,11 +48,30 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// DELETE JPL BY LANGUAGE
+router.delete(
+  "/language/:idLanguage/", (req, res) => {
+    const idLanguage = req.params.idLanguage;
+    pool.query(
+      'DELETE FROM join_project_language WHERE language_id = ?',
+      idLanguage,
+      (err, results) => {
+        if (err) {
+          res.sendStatus(err);
+        } else {
+          res.sendStatus(200);
+        }
+      }
+    );
+  });
+
+
+// DELETE JPL BY PROJECT
 router.delete(
   "/project/:idProject/", (req, res) => {
     const idProject = req.params.idProject;
     pool.query(
-      'DELETE FROM join_language_project WHERE id_project = ?',
+      'DELETE FROM join_project_language WHERE project_id = ?',
       idProject,
       (err, results) => {
         if (err) {
@@ -70,7 +89,7 @@ router.delete(
     const idProject = req.params.idProject;
     const idLanguage = req.params.idLanguage;
     pool.query(
-      'DELETE FROM join_language_project WHERE id_project = ? AND id_language = ?',
+      'DELETE FROM join_project_language WHERE project_id = ? AND language_id = ?',
       [idProject, idLanguage],
       (err, results) => {
         if (err) {

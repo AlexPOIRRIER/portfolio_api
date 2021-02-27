@@ -6,7 +6,7 @@ const pool = require("../../config");
 router.post('/', (req, res) => {
   const data = req.body;
   pool.query(
-    'INSERT INTO join_client_project SET ?',
+    'INSERT INTO join_project_client SET ?',
     data,
     (err, results) => {
       if (err) {
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 
 // GET ALL JCP DATA
 router.get("/", (req, res) => {
-  pool.query("SELECT * FROM join_client_project",
+  pool.query("SELECT * FROM join_project_client",
     (err, results) => {
       if (err) {
         res.status(500).send("Error retrieving data");
@@ -36,7 +36,7 @@ router.delete('/:idProject/client/:idClient', (req, res) => {
   const idProject = req.params.idProject;
   const idClient = req.params.idClient;
   pool.query(
-    'DELETE FROM join_client_project WHERE id_project = ? AND id_client = ?',
+    'DELETE FROM join_project_client WHERE project_id = ? AND client_id = ?',
     [idProject, idClient],
     (err, results) => {
       if (err) {

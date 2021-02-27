@@ -1,29 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config");
+const multer = require('multer');
+const upload = multer({ dest: './public/uploads/' });
+
 
 //CREATE NEW LANGUAGES
-router.post("/", (req, res) => {
-  const data = req.body;
-  pool.query("INSERT INTO language SET ?", data, (err, results) => {
-    if (err) {
-      res.sendStatus(err);
-    } else {
-      const languageId = results.insertId;
-      pool.query("SELECT * FROM language WHERE id = ?", languageId,
-        (error, records) => {
-          if (error) {
-            return res.sendStatus(error);
-          }
-          const insertedEntity = records[0];
-          const host = req.get("localhost");
-          const location = `https://${host}${req.url}/${insertedEntity.id}`;
-          res.status(201).set("Location", location).json(insertedEntity);
-        }
-      )
-    }
-  }
-  );
+router.post("/", upload.single("logo"), (req, res) => {
+  console.log(req.file, req.body)
+  // pool.query("INSERT INTO language SET ?", data, (err, results) => {
+  //   if (err) {
+  //     res.sendStatus(err);
+  //   } else {
+  //     const languageId = results.insertId;
+  //     pool.query("SELECT * FROM language WHERE id = ?", languageId,
+  //       (error, records) => {
+  //         if (error) {
+  //           return res.sendStatus(error);
+  //         }
+  //         const insertedEntity = records[0];
+  //         const host = req.get("localhost");
+  //         const location = `https://${host}${req.url}/${insertedEntity.id}`;
+  //         res.status(201).set("Location", location).json(insertedEntity);
+  //       }
+  //     )
+  //   }
+  // }
+  // );
 });
 
 //GET ALL LANGUAGES
